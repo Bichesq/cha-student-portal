@@ -31,7 +31,13 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL || '',
+      connectionString: (() => {
+        const url = process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
+        if (!url && process.env.NODE_ENV === 'production') {
+          console.error('\n❌ DATABASE ERROR: No connection string found! Link your Vercel Postgres storage to this project.\n')
+        }
+        return url
+      })(),
     },
   }),
   sharp,
