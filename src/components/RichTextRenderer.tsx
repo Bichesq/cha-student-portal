@@ -5,23 +5,27 @@ interface LexicalNode {
   version: number
   children?: LexicalNode[]
   text?: string
-  format?: number | string
+  format?: number
   style?: string
   mode?: string
   detail?: number
   indent?: number
+  tag?: string
+  listType?: string
   [key: string]: any
 }
 
 const formatText = (node: LexicalNode) => {
   let content: React.ReactNode = node.text
 
-  if (node.format & 1) content = <strong key="bold">{content}</strong>
-  if (node.format & 2) content = <em key="italic">{content}</em>
-  if (node.format & 4) content = <u key="underline">{content}</u>
-  if (node.format & 8) content = <code key="code">{content}</code>
-  if (node.format & 16) content = <span key="sub" className="align-sub text-xs">{content}</span>
-  if (node.format & 32) content = <span key="sup" className="align-sup text-xs">{content}</span>
+  if (typeof node.format === 'number') {
+    if (node.format & 1) content = <strong key="bold">{content}</strong>
+    if (node.format & 2) content = <em key="italic">{content}</em>
+    if (node.format & 4) content = <u key="underline">{content}</u>
+    if (node.format & 8) content = <code key="code">{content}</code>
+    if (node.format & 16) content = <span key="sub" className="align-sub text-xs">{content}</span>
+    if (node.format & 32) content = <span key="sup" className="align-sup text-xs">{content}</span>
+  }
 
   return content
 }
