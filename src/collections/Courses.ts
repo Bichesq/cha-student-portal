@@ -161,8 +161,8 @@ export const Courses: CollectionConfig = {
     {
       name: 'estimatedDuration',
       type: 'number',
+      label: 'Duration (minutes)',
       admin: {
-        label: 'Duration (minutes)',
         position: 'sidebar',
       },
       min: 1,
@@ -237,10 +237,8 @@ export const Courses: CollectionConfig = {
           name: 'image',
           type: 'upload',
           relationTo: 'media',
+          label: 'Slide Image',
           required: true,
-          admin: {
-            label: 'Slide Image',
-          },
         },
         {
           name: 'audio',
@@ -365,7 +363,7 @@ export const Courses: CollectionConfig = {
             beforeChange: [
               ({ value }) => {
                 if (value && Array.isArray(value)) {
-                  return value.map((q, index) => ({ ...q, order: index + 1 }))
+                  return value.map((q: any, index) => ({ ...q, order: index + 1 }))
                 }
                 return value
               },
@@ -373,7 +371,7 @@ export const Courses: CollectionConfig = {
           },
           validate: (value) => {
             if (!value) return true
-            for (const q of value) {
+            for (const q of value as any[]) {
               if (q.questionType === 'mcq' && q.answers) {
                 const correctCount = q.answers.filter(
                   (a: any) => a.isCorrect,
@@ -424,20 +422,20 @@ export const Courses: CollectionConfig = {
                 {
                   name: 'ansId',
                   type: 'text',
+                  label: 'Answer ID (a/b/c/d)',
                   required: true,
-                  admin: { label: 'Answer ID (a/b/c/d)' },
                 },
                 {
                   name: 'ans',
                   type: 'text',
+                  label: 'Answer Text',
                   required: true,
-                  admin: { label: 'Answer Text' },
                 },
                 {
                   name: 'isCorrect',
                   type: 'checkbox',
+                  label: 'Is Correct Answer?',
                   required: true,
-                  admin: { label: 'Is Correct Answer?' },
                 },
               ],
             },
