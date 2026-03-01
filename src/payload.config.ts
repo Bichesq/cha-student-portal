@@ -33,8 +33,16 @@ export default buildConfig({
     pool: {
       connectionString: (() => {
         const url = process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
-        if (!url && process.env.NODE_ENV === 'production') {
-          console.error('\n❌ DATABASE ERROR: No connection string found! Link your Vercel Postgres storage to this project.\n')
+        
+        if (process.env.NODE_ENV === 'production') {
+          const envKeys = Object.keys(process.env).filter(key => 
+            key.includes('POSTGRES') || key.includes('DATABASE')
+          )
+          console.log('🔍 [Build Debug] Available Env Vars:', envKeys.join(', ') || 'NONE FOUND')
+          
+          if (!url) {
+            console.error('\n❌ DATABASE ERROR: No connection string found! Link your Vercel Postgres storage to this project.\n')
+          }
         }
         return url
       })(),
