@@ -93,6 +93,9 @@ pnpm generate:types
 **Symptoms:** `Error: cannot connect to Postgres. Details: self-signed certificate in certificate chain`
 **Cause:** Supabase/Vercel Postgres uses self-signed certificates that the Node.js `pg` client doesn't trust by default.
 **Solution:**
-1. **Update Payload Config**: Add `ssl: { rejectUnauthorized: false }` to the `postgresAdapter` pool configuration in `payload.config.ts`.
-2. **Environment Variables**: Prioritize `POSTGRES_PRISMA_URL` for the database connection string as it supports pooling/non-pooling logic better in Vercel.
-3. **SSL Mode**: Alternatively, append `?sslmode=no-verify` to your connection strings in the Vercel dashboard.
+1. **Update Payload Config**: The `payload.config.ts` has been configured to:
+   - Prioritize `POSTGRES_URL_NON_POOLING` for better stability.
+   - Automatically append `sslmode=no-verify` to the connection string during production builds.
+   - Force `ssl: { rejectUnauthorized: false }` when a remote database URL is detected.
+2. **Environment Variables**: Use `POSTGRES_URL_NON_POOLING` if available to bypass Vercel's internal pooling middleware which can sometimes interfere with SSL settings.
+3. **Manual Override**: If issues persist, ensure the connection string in the Vercel dashboard explicitly includes `?sslmode=no-verify`.

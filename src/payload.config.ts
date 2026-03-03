@@ -32,7 +32,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: (() => {
-        const url = process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
+        let url = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
         
         if (process.env.NODE_ENV === 'production') {
           const envKeys = Object.keys(process.env).filter(key => 
@@ -42,11 +42,14 @@ export default buildConfig({
           
           if (!url) {
             console.error('\n❌ DATABASE ERROR: No connection string found! Link your Vercel Postgres storage to this project.\n')
+          } else if (!url.includes('sslmode=')) {
+            // Append sslmode=no-verify if not present to force bypass at the connection string level
+            url += url.includes('?') ? '&sslmode=no-verify' : '?sslmode=no-verify'
           }
         }
         return url
       })(),
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      ssl: process.env.NODE_ENV === 'production' || !!(process.env.POSTGRES_URL || process.env.DATABASE_URL) ? { rejectUnauthorized: false } : false,
     },
   }),
   sharp,
