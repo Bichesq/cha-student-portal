@@ -34,17 +34,23 @@ export default buildConfig({
       connectionString: (() => {
         let url = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
         
-        if (process.env.NODE_ENV === 'production') {
+        if (url && (process.env.NODE_ENV === 'production' || !url.includes('localhost'))) {
+          // 1. Strip any existing sslmode parameter (case-insensitive)
+          url = url.replace(/[?&]sslmode=[^&]*/gi, '');
+          
+          // 2. Clean up trailing ? or & if we stripped the only/last parameter
+          url = url.replace(/[?&]$/, '');
+          
+          // 3. Force sslmode=no-verify
+          url += url.includes('?') ? '&sslmode=no-verify' : '?sslmode=no-verify';
+          
           const envKeys = Object.keys(process.env).filter(key => 
             key.includes('POSTGRES') || key.includes('DATABASE')
           )
-          console.log('🔍 [Build Debug] Available Env Vars:', envKeys.join(', ') || 'NONE FOUND')
+          console.log('🔍 [Build Debug] Cleaned Connection URL (sslmode=no-verify forced)');
           
           if (!url) {
             console.error('\n❌ DATABASE ERROR: No connection string found! Link your Vercel Postgres storage to this project.\n')
-          } else if (!url.includes('sslmode=')) {
-            // Append sslmode=no-verify if not present to force bypass at the connection string level
-            url += url.includes('?') ? '&sslmode=no-verify' : '?sslmode=no-verify'
           }
         }
         return url

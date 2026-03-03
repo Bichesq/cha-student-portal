@@ -91,11 +91,11 @@ pnpm generate:types
 
 ### Issue: `SELF_SIGNED_CERT_IN_CHAIN` during Build/Runtime
 **Symptoms:** `Error: cannot connect to Postgres. Details: self-signed certificate in certificate chain`
-**Cause:** Supabase/Vercel Postgres uses self-signed certificates that the Node.js `pg` client doesn't trust by default.
+**Cause:** Supabase/Vercel Postgres uses self-signed certificates that the Node.js `pg` client doesn't trust by default. The client often ignores the `ssl` config object if an `sslmode` parameter is already in the connection string.
 **Solution:**
-1. **Update Payload Config**: The `payload.config.ts` has been configured to:
-   - Prioritize `POSTGRES_URL_NON_POOLING` for better stability.
-   - Automatically append `sslmode=no-verify` to the connection string during production builds.
-   - Force `ssl: { rejectUnauthorized: false }` when a remote database URL is detected.
-2. **Environment Variables**: Use `POSTGRES_URL_NON_POOLING` if available to bypass Vercel's internal pooling middleware which can sometimes interfere with SSL settings.
-3. **Manual Override**: If issues persist, ensure the connection string in the Vercel dashboard explicitly includes `?sslmode=no-verify`.
+1. **Update Payload Config**: The `payload.config.ts` has been updated with an **aggressive fix**:
+   - It **strips existing `sslmode`** parameters from the environment variable URLs using regex.
+   - It **forces `sslmode=no-verify`** at the connection string level.
+   - It still maintains the `ssl: { rejectUnauthorized: false }` configuration object as a secondary layer.
+2. **Environment Variables**: Prioritize `POSTGRES_URL_NON_POOLING` for direct connections during build.
+3. **Manual Override**: If logs still show certificate issues, check if your connection string has `sslmode` baked in elsewhere, though the regex should now handle this.
