@@ -88,3 +88,11 @@ pnpm generate:types
 1. **Switch to Local API**: Use `getPayload({ config })` inside `src/lib/payload.ts` instead of `fetch`.
 2. **Resiliency**: Wrap data fetching in `try/catch` blocks to allow the build to finish with empty data if the DB is unreachable.
 3. **Vercel Link**: Ensure Vercel Postgres is explicitly **Linked** to the project in the Vercel Storage settings.
+
+### Issue: `SELF_SIGNED_CERT_IN_CHAIN` during Build/Runtime
+**Symptoms:** `Error: cannot connect to Postgres. Details: self-signed certificate in certificate chain`
+**Cause:** Supabase/Vercel Postgres uses self-signed certificates that the Node.js `pg` client doesn't trust by default.
+**Solution:**
+1. **Update Payload Config**: Add `ssl: { rejectUnauthorized: false }` to the `postgresAdapter` pool configuration in `payload.config.ts`.
+2. **Environment Variables**: Prioritize `POSTGRES_PRISMA_URL` for the database connection string as it supports pooling/non-pooling logic better in Vercel.
+3. **SSL Mode**: Alternatively, append `?sslmode=no-verify` to your connection strings in the Vercel dashboard.

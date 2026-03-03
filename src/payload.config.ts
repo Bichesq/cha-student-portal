@@ -32,7 +32,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: (() => {
-        const url = process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
+        const url = process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
         
         if (process.env.NODE_ENV === 'production') {
           const envKeys = Object.keys(process.env).filter(key => 
@@ -46,6 +46,7 @@ export default buildConfig({
         }
         return url
       })(),
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
     },
   }),
   sharp,
