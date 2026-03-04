@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, GraduateCap, Layout, Sparkles } from 'lucide-react'
+import { ArrowRight, GraduationCap, Layout, Sparkles } from 'lucide-react'
 
 export default function Home() {
   return (
@@ -58,7 +58,7 @@ export default function Home() {
                 {
                   title: 'Expert Content',
                   desc: 'Courses designed by industry veterans and top educators.',
-                  icon: GraduateCap,
+                  icon: GraduationCap,
                   color: 'bg-blue-500'
                 },
                 {
