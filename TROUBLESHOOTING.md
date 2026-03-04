@@ -99,3 +99,22 @@ pnpm generate:types
    - It still maintains the `ssl: { rejectUnauthorized: false }` configuration object as a secondary layer.
 2. **Environment Variables**: Prioritize `POSTGRES_URL_NON_POOLING` for direct connections during build.
 3. **Manual Override**: If logs still show certificate issues, check if your connection string has `sslmode` baked in elsewhere, though the regex should now handle this.
+
+---
+
+## 6. Database Schema & Migrations
+
+### Issue: `relation "..." does not exist`
+**Symptoms:** Error during fetch or build: `[cause]: error: relation "site_settings" does not exist`
+**Cause:** The database connection is successful, but the tables have not been created. In Payload 3.0, you must generate and run migrations to synchronize your schema with the database.
+**Solution:**
+1. **Generate Migration**: Run the following command locally (ensure your `.env` points to the target database):
+   ```bash
+   pnpm run migrate:create initial_schema
+   ```
+2. **Commit and Push**: This will create a `src/migrations` folder. Commit this folder and push it to GitHub.
+3. **Automatic Migration**: The `build` script in `package.json` has been updated to include `payload migrate`. This will run every time you deploy to Vercel.
+4. **Manual Run**: If needed, you can run it manually in your local terminal (pointing to the remote DB):
+   ```bash
+   pnpm run migrate
+   ```
