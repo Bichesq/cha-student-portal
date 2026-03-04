@@ -118,16 +118,19 @@ export const SlidePlayer: React.FC<SlidePlayerProps> = ({ slides, audioEnabled }
           )}
 
           {slideType === 'intro' && (
-            <div className="space-y-4">
-              <p className="text-lg text-gray-700">
-                <span className="font-bold text-blue-600">{authorRole || 'Author and Designer'}:</span> {authorName}
-              </p>
-              <div className="p-4 bg-gray-50 rounded-lg border-l-4 border-blue-600">
-                <p className="m-0 italic text-gray-600">
-                  <span className="font-bold uppercase text-[10px] tracking-wider block mb-1">Objective</span>
-                  {objective}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <p className="text-lg text-gray-700">
+                  <span className="font-bold text-blue-600">{authorRole || 'Author and Designer'}:</span> {authorName}
                 </p>
+                <div className="p-4 bg-gray-50 rounded-lg border-l-4 border-blue-600">
+                  <p className="m-0 italic text-gray-600">
+                    <span className="font-bold uppercase text-[10px] tracking-wider block mb-1 font-sans">Objective</span>
+                    {objective}
+                  </p>
+                </div>
               </div>
+              {content && <RichTextRenderer content={content} />}
             </div>
           )}
 
@@ -175,7 +178,7 @@ export const SlidePlayer: React.FC<SlidePlayerProps> = ({ slides, audioEnabled }
                 <ul className="list-none space-y-3 p-0">
                   {bulletPoints?.map((bp, i) => (
                     <li key={i} className="flex items-center text-green-700 font-medium">
-                      <span className="text-green-500 mr-3">✔</span>
+                      <span className="w-6 h-6 flex items-center justify-center bg-green-600 text-white rounded-full text-xs mr-3 shrink-0">{i+1}</span>
                       {bp.point}
                     </li>
                   ))}

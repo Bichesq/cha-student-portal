@@ -1,0 +1,143 @@
+[
+  {
+    "courseId": "CP-VN01",
+    "title": "Virtual Networks",
+    "slug": "virtual-networks",
+    "objective": "This course is designed to introduce students to the fundamentals of virtual networks or networking in cloud computing. You will learn about the various components and services offered by cloud providers to facilitate all your networking needs.",
+    "description": "Virtual networks in the cloud are isolated network environments that allow you to securely connect and manage your cloud resources. They provide a private space within a public cloud infrastructure, enabling you to create subnets, configure routing rules, and control network traffic. Virtual networks are essential for building scalable and secure cloud applications, as they provide a foundation for connecting your resources and ensuring data privacy.",
+    "topics": [
+      "IP Addressing Review",
+      "Classless Inter-Domain Routing (CIDR)",
+      "Virtual Private Cloud (VPC)",
+      "Subnets",
+      "Route Tables",
+      "Internet Gateways",
+      "Elastic IPs",
+      "Network Address Translation (NAT) Gateways",
+      "Endpoints",
+      "VPC Peering",
+      "Private Connection",
+      "Transit Gateways"
+    ],
+    "authorName": "Kris Fernando",
+    "authorRole": "Author and Designer",
+    "difficulty": "intermediate",
+    "contentModel": "slides",
+    "audioEnabled": true,
+    "tags": ["networking", "cloud", "vpc", "cidr", "intermediate"],
+    "prerequisites": ["B-NB01"],
+    "slides": [
+      {
+        "order": 1,
+        "slideType": "tutorial",
+        "imgName": "1",
+        "slideTitle": "Welcome!",
+        "bulletPoints": [
+          "1. Press the Play button to listen to the content",
+          "2. Press the Stop button to stop the audio",
+          "3. Press the Backward arrow button to go to the previous slide",
+          "4. Press the Next arrow button to go to the next slide"
+        ]
+      },
+      {
+        "order": 2,
+        "slideType": "intro",
+        "imgName": "2",
+        "slideTitle": "Virtual Networks",
+        "objective": "This course is designed to introduce students to the fundamentals of virtual networks or networking in cloud computing. You will learn about the various components and services offered by cloud providers to facilitate all your networking needs.",
+        "authorName": "Kris Fernando",
+        "authorRole": "Author and Designer"
+      },
+      {
+        "order": 3,
+        "slideType": "topics",
+        "imgName": "3",
+        "slideTitle": "Introduction",
+        "content": "Virtual networks in the cloud are isolated network environments that allow you to securely connect and manage your cloud resources. They provide a private space within a public cloud infrastructure, enabling you to create subnets, configure routing rules, and control network traffic. Virtual networks are essential for building scalable and secure cloud applications, as they provide a foundation for connecting your resources and ensuring data privacy.",
+        "topicsList": [
+          "IP Addressing Review",
+          "Classless Inter-Domain Routing (CIDR)",
+          "Virtual Private Cloud (VPC)",
+          "Subnets",
+          "Route Tables",
+          "Internet Gateways",
+          "Elastic IPs",
+          "Network Address Translation (NAT) Gateways",
+          "Endpoints",
+          "VPC Peering",
+          "Private Connection",
+          "Transit Gateways"
+        ]
+      }
+    ],
+    "knowledgeCheck": {
+      "allowPerQuestionSubmit": true,
+      "playOnNextDefault": false,
+      "showProgress": true,
+      "passingScore": 100,
+      "questions": [
+        {
+          "order": 1,
+          "questionType": "mcq",
+          "question": "1) What is the networking component Virtual Machines directly reside in?",
+          "answers": [
+            { "ansId": "a", "ans": "a) Virtual Private Cloud (VPC).", "isCorrect": false },
+            { "ansId": "b", "ans": "b) Subnets.", "isCorrect": true },
+            { "ansId": "c", "ans": "c) Availability Zones (AZ).", "isCorrect": false },
+            { "ansId": "d", "ans": "d) Regions.", "isCorrect": false }
+          ]
+        },
+        {
+          "order": 2,
+          "questionType": "mcq",
+          "question": "2) Identify the largest CIDR Block?",
+          "answers": [
+            { "ansId": "a", "ans": "a) 0.0.0.0/0.", "isCorrect": true },
+            { "ansId": "b", "ans": "b) 10.0.0.0/8.", "isCorrect": false },
+            { "ansId": "c", "ans": "c) 10.0.0.0/16.", "isCorrect": false },
+            { "ansId": "d", "ans": "d) 10.0.0.0/24.", "isCorrect": false }
+          ]
+        },
+        {
+          "order": 3,
+          "questionType": "mcq",
+          "question": "3) How can you make a Public Subnet?",
+          "answers": [
+            { "ansId": "a", "ans": "a) Add an Internet Gateway to the VPC.", "isCorrect": false },
+            { "ansId": "b", "ans": "b) Add a Route for destination 0.0.0.0/0 with the Internet Gateway as the target.", "isCorrect": true },
+            { "ansId": "c", "ans": "c) Set the Subnet as Public.", "isCorrect": false },
+            { "ansId": "d", "ans": "d) Use a Transit Gateway.", "isCorrect": false }
+          ]
+        },
+        {
+          "order": 4,
+          "questionType": "mcq",
+          "question": "4) What is a dedicated private connection between the Cloud and a Data Center?",
+          "answers": [
+            { "ansId": "a", "ans": "a) Virtual Private Cloud (VPN).", "isCorrect": false },
+            { "ansId": "b", "ans": "b) Direct Connect.", "isCorrect": true },
+            { "ansId": "c", "ans": "c) Transit Gateway.", "isCorrect": false },
+            { "ansId": "d", "ans": "d) VPC Peering.", "isCorrect": false }
+          ]
+        },
+        {
+          "order": 5,
+          "questionType": "mcq",
+          "question": "5) How do you control the flow of Traffic in your Virtual Private Cloud (VPC)?",
+          "answers": [
+            { "ansId": "a", "ans": "a) Internet Gateway (IGW).", "isCorrect": false },
+            { "ansId": "b", "ans": "b) NAT Gateway (NAT).", "isCorrect": false },
+            { "ansId": "c", "ans": "c) Transit Gateway.", "isCorrect": false },
+            { "ansId": "d", "ans": "d) Route Tables.", "isCorrect": true }
+          ]
+        },
+        {
+          "order": 6,
+          "questionType": "completion",
+          "completionMessage": "Congratulations! Your Knowledge is 100%",
+          "completionSubtext": "You can now proceed to the next course on your learning path. If one is not available please inquire with the community. We are releasing new courses periodically, so keep a lookout for them. Click on the Home Icon at the top left of your screen. Good luck! Keep learning and growing!"
+        }
+      ]
+    }
+  }
+]
