@@ -238,7 +238,14 @@ export const Courses: CollectionConfig = {
           type: 'upload',
           relationTo: 'media',
           label: 'Slide Image',
-          required: true,
+          required: false,
+        },
+        {
+          name: 'imgName',
+          type: 'text',
+          admin: {
+            description: 'Reference name from the source JSON (e.g. "1")',
+          },
         },
         {
           name: 'audio',
