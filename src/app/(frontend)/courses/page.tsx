@@ -1,6 +1,8 @@
 import { getCourses, getSiteSettings } from '@/lib/payload'
 import { CourseCard } from '@/components/course/CourseCard'
 
+export const dynamic = 'force-dynamic'
+
 export default async function CoursesPage() {
   const [courses, settings] = await Promise.all([
     getCourses(),
