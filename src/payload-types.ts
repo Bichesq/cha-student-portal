@@ -250,7 +250,11 @@ export interface Course {
   slides: {
     order: number;
     slideType: 'tutorial' | 'intro' | 'topics' | 'content' | 'content-subheadings' | 'content-list' | 'outro';
-    image: number | Media;
+    image?: (number | null) | Media;
+    /**
+     * Reference name from the source JSON (e.g. "1")
+     */
+    imgName?: string | null;
     audio?: (number | null) | Media;
     slideTitle: string;
     content?: {
@@ -519,6 +523,7 @@ export interface CoursesSelect<T extends boolean = true> {
         order?: T;
         slideType?: T;
         image?: T;
+        imgName?: T;
         audio?: T;
         slideTitle?: T;
         content?: T;
