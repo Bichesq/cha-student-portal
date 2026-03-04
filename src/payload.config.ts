@@ -36,13 +36,14 @@ export default buildConfig({
         
         if (url && (process.env.NODE_ENV === 'production' || !url.includes('localhost'))) {
           // 1. Strip any existing sslmode parameter (case-insensitive)
-          url = url.replace(/[?&]sslmode=[^&]*/gi, '');
+          url = url.replace(/([?&])sslmode=[^&]*(&|$)/gi, '$1').replace(/[?&]$/, '')
           
-          // 2. Clean up trailing ? or & if we stripped the only/last parameter
-          url = url.replace(/[?&]$/, '');
-          
-          // 3. Force sslmode=no-verify
-          url += url.includes('?') ? '&sslmode=no-verify' : '?sslmode=no-verify';
+          // 2. Ensure we have a clean base before appending
+          if (!url.includes('?')) {
+            url += '?sslmode=no-verify'
+          } else {
+            url += '&sslmode=no-verify'
+          }
           
           const envKeys = Object.keys(process.env).filter(key => 
             key.includes('POSTGRES') || key.includes('DATABASE')
