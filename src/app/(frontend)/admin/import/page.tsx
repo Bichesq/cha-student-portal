@@ -66,8 +66,8 @@ export default function ImportPage() {
                 <FileJson className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Course Importer</h1>
-                <p className="text-slate-500 font-medium">Bulk create courses from a JSON file</p>
+                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Course Creator</h1>
+                <p className="text-slate-500 font-medium">Create courses using a JSON configuration</p>
               </div>
             </div>
 
@@ -94,7 +94,7 @@ export default function ImportPage() {
                     </div>
                   ) : (
                     <div>
-                      <p className="text-xl font-bold text-slate-900 mb-1">Select a JSON file</p>
+                      <p className="text-xl font-bold text-slate-900 mb-1">Select JSON Configuration</p>
                       <p className="text-sm text-slate-500 font-medium">Drag and drop or click to browse</p>
                     </div>
                   )}
@@ -110,10 +110,10 @@ export default function ImportPage() {
                 {status === 'parsing' || status === 'uploading' ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    {status === 'parsing' ? 'Validating...' : 'Importing...'}
+                    {status === 'parsing' ? 'Validating...' : 'Creating...'}
                   </>
                 ) : (
-                  'Start Import'
+                  'Start Creation'
                 )}
               </button>
 
@@ -124,7 +124,7 @@ export default function ImportPage() {
                   <div>
                     <p className="font-bold text-emerald-900">Success!</p>
                     <p className="text-emerald-700 leading-relaxed font-medium">
-                      Successfully imported {importCount} courses into the catalog.
+                      {message}
                     </p>
                   </div>
                 </div>
