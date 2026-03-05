@@ -4,6 +4,8 @@ import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
@@ -29,7 +31,9 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  sharp,
   db: postgresAdapter({
+    push: false,
     pool: {
       connectionString: (() => {
         let url = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
@@ -59,6 +63,18 @@ export default buildConfig({
       ssl: process.env.NODE_ENV === 'production' || !!(process.env.POSTGRES_URL || process.env.DATABASE_URL) ? { rejectUnauthorized: false } : false,
     },
   }),
-  sharp,
-  plugins: [],
+  email: resendAdapter({
+    defaultFromAddress: process.env.RESEND_DEFAULT_FROM || 'onboarding@resend.dev',
+    defaultFromName: 'CHA Student Portal',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
+  plugins: [
+    vercelBlobStorage({
+      enabled: !!process.env.BLOB_READ_WRITE_TOKEN,
+      collections: {
+        media: true,
+      },
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
+  ],
 })
