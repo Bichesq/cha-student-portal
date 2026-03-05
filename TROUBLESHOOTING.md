@@ -118,3 +118,18 @@ pnpm generate:types
    ```bash
    pnpm run migrate
    ```
+
+## 7. EC2 & Connectivity (ENETUNREACH)
+
+### Issue: `connect ENETUNREACH` with IPv6 Address
+**Symptoms:** `Error: connect ENETUNREACH 2406:da1c:...:5432`
+**Cause:** EC2 instances often lack an IPv6 route, but Node.js may resolve hostnames to IPv6 by default.
+**Solution:**
+1. **Use Supabase Pooler**: Switch to the Supabase pooler URL (Transaction mode, port `6543`).
+2. **Force IPv4**:
+   - Add `dns.setDefaultResultOrder('ipv4first')` in `payload.config.ts`.
+   - Use `NODE_OPTIONS="--dns-result-order=ipv4first"` in scripts.
+3. **Example `package.json`**:
+   ```json
+   "migrate": "cross-env NODE_OPTIONS='--no-deprecation --dns-result-order=ipv4first' payload migrate --force"
+   ```
