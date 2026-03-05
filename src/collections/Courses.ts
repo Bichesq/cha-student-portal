@@ -152,6 +152,16 @@ export const Courses: CollectionConfig = {
       relationTo: 'media',
     },
     {
+      name: 'courseMedia',
+      type: 'relationship',
+      relationTo: 'media',
+      hasMany: true,
+      label: 'Course Images',
+      admin: {
+        description: 'Upload or select images to be used within this course.',
+      },
+    },
+    {
       name: 'publishedAt',
       type: 'date',
       admin: {

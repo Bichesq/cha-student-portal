@@ -133,3 +133,19 @@ pnpm generate:types
    ```json
    "migrate": "cross-env NODE_OPTIONS='--no-deprecation --dns-result-order=ipv4first' payload migrate --force"
    ```
+
+---
+
+## 8. EC2 & Port Conflicts (EADDRINUSE)
+
+### Issue: `Error: listen EADDRINUSE: address already in use :::3000`
+**Symptoms:** Application fails to start, PM2 logs show the error above.
+**Cause:** Another process (possibly a ghost Node.js instance) is already listening on port 3000.
+**Solution:**
+1. **Identify the Process**: `sudo lsof -i :3000`
+2. **Kill the Process**: `sudo kill -9 <PID>`
+3. **Reset PM2**:
+   ```bash
+   pm2 delete all
+   pm2 start pnpm --name "payload-backend" --node-args="--dns-result-order=ipv4first" -- start
+   ```
