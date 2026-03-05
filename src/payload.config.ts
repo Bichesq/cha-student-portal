@@ -39,28 +39,26 @@ export default buildConfig({
         let url = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL || ''
         
         if (url && (process.env.NODE_ENV === 'production' || !url.includes('localhost'))) {
-          // 1. Strip any existing sslmode parameter (case-insensitive)
-          url = url.replace(/([?&])sslmode=[^&]*(&|$)/gi, '$1').replace(/[?&]$/, '')
-          
-          // 2. Ensure we have a clean base before appending
-          if (!url.includes('?')) {
-            url += '?sslmode=no-verify'
-          } else {
-            url += '&sslmode=no-verify'
+          // Only append sslmode if not already present
+          if (!url.includes('sslmode=')) {
+            if (!url.includes('?')) {
+              url += '?sslmode=no-verify'
+            } else {
+              url += '&sslmode=no-verify'
+            }
           }
           
-          const envKeys = Object.keys(process.env).filter(key => 
-            key.includes('POSTGRES') || key.includes('DATABASE')
-          )
-          console.log('🔍 [Build Debug] Cleaned Connection URL (sslmode=no-verify forced)');
+          console.log('🔍 [Build Debug] Database URL in use');
           
           if (!url) {
-            console.error('\n❌ DATABASE ERROR: No connection string found! Link your Vercel Postgres storage to this project.\n')
+            console.error('\n❌ DATABASE ERROR: No connection string found!\n')
           }
         }
         return url
       })(),
-      ssl: process.env.NODE_ENV === 'production' || !!(process.env.POSTGRES_URL || process.env.DATABASE_URL) ? { rejectUnauthorized: false } : false,
+      ssl: process.env.NODE_ENV === 'production' || !!(process.env.POSTGRES_URL || process.env.DATABASE_URL) 
+        ? { rejectUnauthorized: false } 
+        : false,
     },
   }),
   email: resendAdapter({
