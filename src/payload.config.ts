@@ -1,3 +1,4 @@
+import dns from 'dns'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
@@ -13,6 +14,7 @@ import { Tags } from './collections/Tags'
 import { Courses } from './collections/Courses'
 import { SiteSettings } from './globals/SiteSettings'
 
+dns.setDefaultResultOrder('ipv4first');
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
