@@ -163,11 +163,14 @@ export async function importCoursesAction(courses: any[]) {
        return { success: false, message: "Invalid input: expected an array." }
     }
 
+    const results = []
     for (const rawData of courses) {
       console.log(`Processing course: ${rawData.courseId || 'unknown'} - ${rawData.title || 'no title'}`)
       try {
         if (!rawData.title || !rawData.courseId) {
-           console.warn(`Skipping item due to missing title (${rawData.title}) or courseId (${rawData.courseId})`)
+           const error = `Skipping item due to missing title (${rawData.title}) or courseId (${rawData.courseId})`
+           console.warn(error)
+           results.push({ courseId: rawData.courseId || 'unknown', success: false, error })
            continue
         }
 
@@ -195,9 +198,12 @@ export async function importCoursesAction(courses: any[]) {
         }
         
         count++
+        results.push({ courseId: courseData.courseId, success: true })
         console.log(`Successfully processed ${courseData.courseId}. Total count: ${count}`)
       } catch (err) {
         console.error(`Error creating course ${rawData.courseId}:`, err)
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+        results.push({ courseId: rawData.courseId, success: false, error: errorMessage })
         // Check for validation errors manually if possible
         if (err && typeof err === 'object' && 'data' in err) {
            console.error("Validation details:", JSON.stringify((err as any).data))
@@ -205,10 +211,20 @@ export async function importCoursesAction(courses: any[]) {
       }
     }
 
-    console.log(`Creation finished. Final count: ${count}`)
+    const failedCount = results.filter(r => !r.success).length
+    console.log(`Creation finished. Success: ${count}, Failed: ${failedCount}`)
+    
+    if (count === 0 && courses.length > 0) {
+      return {
+        success: false,
+        message: `Failed to create any courses. Errors: ${results.filter(r => !r.success).map(r => r.error).join(', ')}`,
+        count: 0
+      }
+    }
+
     return {
       success: true,
-      message: `Creation completed. ${count} courses processed.`,
+      message: `Creation completed. ${count} courses successful, ${failedCount} failed.`,
       count,
     }
   } catch (err) {
