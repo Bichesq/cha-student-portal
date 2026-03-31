@@ -149,3 +149,25 @@ pnpm generate:types
    pm2 delete all
    pm2 start pnpm --name "payload-backend" --node-args="--dns-result-order=ipv4first" -- start
    ```
+
+---
+
+## 9. Project Consolidation & Unified Naming
+
+### Issue: Redundant Directories and Fragmented Structure
+**Symptoms:** Separation of `/cha-student-portal` (legacy frontend) and `/payload_backend` (integrated Next.js 15/Payload 3.0 project) caused confusion and maintenance overhead.
+**Solution:** 
+1.  **Consolidation**: The frontend code and assets were successfully migrated into the `payload_backend` Next.js `(frontend)` route group.
+2.  **Renaming**: The redundant `/cha-student-portal` directory was removed, and `/payload_backend` is being renamed to `/cha-student-portal` to become the sole project root.
+
+### IMPORTANT: EC2 Deployment Impact
+Renaming the folder from `payload_backend` to `cha-student-portal` **breaks** the directory paths used in the current EC2 deployment logic.
+**Required Actions on EC2:**
+1.  **Update CI/CD**: Update any deployment scripts (`deploy.sh`) or GitHub Action workflows to point to the new directory.
+2.  **Reset PM2**:
+    ```bash
+    pm2 delete payload-backend
+    cd ~/cha-student-portal
+    pm2 start pnpm --name "cha-student-portal" --node-args="--dns-result-order=ipv4first" -- start
+    ```
+3.  **Nginx**: Verify if Nginx configurations point to the old directory path for `public` assets.
