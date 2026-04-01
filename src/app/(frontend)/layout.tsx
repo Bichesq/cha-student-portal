@@ -7,7 +7,7 @@ import Image from 'next/image'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3001'
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3000'
 
 export async function generateMetadata(): Promise<Metadata> {
   try {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 interface LexicalNode {
   type: string
@@ -68,6 +68,16 @@ const renderNode = (node: LexicalNode, index: number): React.ReactNode => {
 }
 
 export const RichTextRenderer: React.FC<{ content: any }> = ({ content }) => {
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) {
+    return null
+  }
+
   if (!content || !content.root) return null
   return <div className="rich-text-content">{content.root.children.map((node: LexicalNode, i: number) => renderNode(node, i))}</div>
 }

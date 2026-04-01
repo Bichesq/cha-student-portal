@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { CourseSlide, TopicItem, Subheading } from '@/types/course'
 import { RichTextRenderer } from '../RichTextRenderer'
 
-const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3001'
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3000'
 
 interface SlidePlayerProps {
   slides: CourseSlide[]
@@ -15,7 +15,17 @@ interface SlidePlayerProps {
 export const SlidePlayer: React.FC<SlidePlayerProps> = ({ slides, audioEnabled }) => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [hasMounted, setHasMounted] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  
+  // Handle hydration
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) {
+    return null // Return null or a skeleton, but don't render until mounted to avoid hydration mismatch
+  }
   
   const currentSlide = slides[currentSlideIndex]
 

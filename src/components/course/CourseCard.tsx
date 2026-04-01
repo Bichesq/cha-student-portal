@@ -1,14 +1,28 @@
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Course } from '@/types/course'
 
-const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3001'
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3000'
 
 export const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
   const difficultyColors = {
     beginner: 'bg-green-100 text-green-800',
     intermediate: 'bg-blue-100 text-blue-800',
     advanced: 'bg-red-100 text-red-800',
+  }
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden min-h-[300px] animate-pulse">
+        <div className="aspect-video bg-gray-100" />
+      </div>
+    )
   }
 
   const thumbnailUrl = course.thumbnail?.url 

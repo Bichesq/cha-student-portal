@@ -1,68 +1,99 @@
-# Payload Blank Template
+# CHA Student Portal
 
-This template comes configured with the bare minimum to get started on anything you need.
+Welcome to the Cloud Heroes Africa (CHA) Student Portal. This application is an integrated platform built with **Next.js 15 (App Router)** and **Payload CMS 3.0**.
 
-## Quick start
+## Project Overview
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+The project consolidates the student portal frontend and the administrative backend into a single Next.js application, sharing a unified database and authentication system.
 
-## Quick Start - local setup
+- **Frontend**: A custom student experience built with Next.js and Tailwind CSS.
+- **Backend/CMS**: Powered by Payload CMS 3.0 for managing courses, users, and site settings.
 
-To spin up this template locally, follow these steps:
+---
 
-### Clone
+## 🌐 Accessing the Application on EC2
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+When the application is deployed to an AWS EC2 instance, you can access the various parts of the portal using the following URLs:
 
-### Development
+### 1. Frontend (Student Portal)
+- **URL**: `http://<EC2_PUBLIC_IP_OR_DOMAIN>/`
+- **Description**: The main entry point for students to view courses and access their learning materials.
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+### 2. Admin Dashboard (Payload CMS)
+- **URL**: `http://<EC2_PUBLIC_IP_OR_DOMAIN>/admin`
+- **Description**: The administrative interface used by staff and instructors to manage content, media, and users.
+- **Login**: Use the administrator credentials created during the initial setup.
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+---
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+## 🛠 Quick Start - Local Setup
 
-#### Docker (Optional)
+To run the project locally for development, follow these steps:
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+### 1. Environment Configuration
+Copy the example environment file and fill in the required variables (Database URL, Payload Secret, etc.):
+```bash
+cp .env.example .env
+```
 
-To do so, follow these steps:
+### 2. Install Dependencies
+```bash
+pnpm install
+```
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+### 3. Start Development Server
+```bash
+pnpm dev
+```
+Open [http://localhost:3000](http://localhost:3000) for the frontend and [http://localhost:3000/admin](http://localhost:3000/admin) for the CMS.
 
-## How it works
+---
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+## 🚀 Deployment & Maintenance (EC2)
 
-### Collections
+The application is typically deployed on EC2 using **PM2** as a process manager and **Nginx** as a reverse proxy.
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+### Project Directory
+The project is located at: `~/cha-student-portal`
 
-- #### Users (Authentication)
+### Common Commands on EC2
 
-  Users are auth-enabled collections that have access to the admin panel.
+#### 1. Initial Launch / Start Application
+Register the application with PM2 for the first time:
+```bash
+# Navigate to the project
+cd ~/cha-student-portal
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+# Start the process with required IPv4 forcing
+pm2 start pnpm --name "cha-student-portal" --node-args="--dns-result-order=ipv4first" -- start
 
-- #### Media
+# Save the process list to restart on reboot
+pm2 save
+```
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+#### 2. General Maintenance
+- **Restart**: `pm2 restart cha-student-portal`
+- **View Logs**: `pm2 logs cha-student-portal`
+- **Update Application**:
+  ```bash
+  git pull origin main
+  pnpm install
+  pnpm build
+  pm2 restart cha-student-portal
+  ```
 
-### Docker
+---
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+## 📂 Project Structure
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+- `src/app/(frontend)`: Handles all public-facing portal routes.
+- `src/app/(payload)`: Contains the Payload CMS admin panel and API.
+- `src/collections`: Definitions for Payload data models (Users, Courses, Media, etc.).
+- `src/globals`: Global site configuration.
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+---
 
-## Questions
+## ❓ Questions & Support
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+For technical challenges, please refer to the [TROUBLESHOOTING.md](file:///e:/Projects/CHA_Student_Portal/cha-student-portal/TROUBLESHOOTING.md) file which documents known issues and fixes related to the EC2 environment and Payload 3.0.
 

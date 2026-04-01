@@ -1,13 +1,23 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Course } from '@/types/course'
 import { SlidePlayer } from '@/components/course/SlidePlayer'
 import { QuizPlayer } from '@/components/course/QuizPlayer'
 
 export default function CoursePlayerClient({ course }: { course: Course }) {
+  const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3000'
   const [activeTab, setActiveTab] = useState<'material' | 'quiz'>('material')
+  const [hasMounted, setHasMounted] = useState(false)
+
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) {
+    return null
+  }
 
   return (
     <div className="flex flex-col h-screen max-h-screen bg-slate-50 overflow-hidden">
