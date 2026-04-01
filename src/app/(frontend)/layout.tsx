@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: settings.siteName,
       description: settings.siteTagline || 'Learning Platform',
     }
-  } catch (error) {
+  } catch (_error) {
     return {
       title: 'CHA Courses',
       description: 'Learning Platform',

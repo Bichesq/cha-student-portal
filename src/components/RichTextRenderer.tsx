@@ -1,20 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 
-interface LexicalNode {
-  type: string
-  version: number
-  children?: LexicalNode[]
-  text?: string
-  format?: number
-  style?: string
-  mode?: string
-  detail?: number
-  indent?: number
-  tag?: string
-  listType?: string
-  [key: string]: any
-}
+import { LexicalNode, LexicalRichText } from '@/types/course'
 
 const formatText = (node: LexicalNode) => {
   let content: React.ReactNode = node.text
@@ -36,7 +23,7 @@ const renderNode = (node: LexicalNode, index: number): React.ReactNode => {
     return formatText(node)
   }
 
-  const children = node.children ? node.children.map((child, i) => renderNode(child, i)) : null
+  const children = node.children ? node.children.map((child: LexicalNode, i: number) => renderNode(child, i)) : null
 
   switch (node.type) {
     case 'paragraph':
@@ -68,7 +55,7 @@ const renderNode = (node: LexicalNode, index: number): React.ReactNode => {
   }
 }
 
-export const RichTextRenderer: React.FC<{ content: any }> = ({ content }) => {
+export const RichTextRenderer: React.FC<{ content: LexicalRichText | null | undefined }> = ({ content }) => {
   const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {

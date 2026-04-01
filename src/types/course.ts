@@ -1,3 +1,34 @@
+export interface LexicalNode {
+  type: string
+  version: number
+  children?: LexicalNode[]
+  text?: string
+  format?: number
+  style?: string
+  mode?: string
+  detail?: number
+  indent?: number
+  tag?: string
+  listType?: string
+  fields?: {
+    url?: string
+    newTab?: boolean
+    [key: string]: unknown
+  }
+  [key: string]: unknown
+}
+
+export interface LexicalRichText {
+  root: {
+    type: string
+    children: LexicalNode[]
+    direction: 'ltr' | 'rtl' | null
+    format: string
+    indent: number
+    version: number
+  }
+}
+
 export interface Media {
   id: string | number
   url: string
@@ -27,7 +58,7 @@ export interface SubheadingItem {
 export interface Subheading {
   id?: string
   label: string
-  body?: any // Lexical rich text
+  body?: LexicalRichText
   items?: SubheadingItem[]
 }
 
@@ -43,7 +74,7 @@ export interface CourseSlide {
   image: Media
   audio?: Media
   slideTitle: string
-  content?: any // Lexical rich text
+  content?: LexicalRichText
   objective?: string
   authorName?: string
   authorRole?: string
@@ -66,7 +97,7 @@ export interface CourseQuestion {
   question?: string
   answers?: CourseAnswer[]
   completionMessage?: string
-  completionSubtext?: any // Lexical rich text
+  completionSubtext?: LexicalRichText
 }
 
 export interface KnowledgeCheck {
@@ -84,8 +115,8 @@ export interface Course {
   slug: string
   difficulty: 'beginner' | 'intermediate' | 'advanced'
   status: 'draft' | 'published' | 'archived'
-  objective: any // Lexical rich text
-  description: any // Lexical rich text
+  objective: LexicalRichText
+  description: LexicalRichText
   topics: TopicItem[]
   authorName: string
   authorRole: string

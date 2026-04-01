@@ -9,7 +9,6 @@ export default function ImportPage() {
   const [file, setFile] = useState<File | null>(null)
   const [status, setStatus] = useState<'idle' | 'parsing' | 'uploading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
-  const [importCount, setImportCount] = useState(0)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -37,7 +36,6 @@ export default function ImportPage() {
       if (result.success) {
         setStatus('success')
         setMessage(result.message)
-        setImportCount(result.count || 0)
       } else {
         setStatus('error')
         setMessage(result.message)

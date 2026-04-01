@@ -7,7 +7,6 @@ import { SlidePlayer } from '@/components/course/SlidePlayer'
 import { QuizPlayer } from '@/components/course/QuizPlayer'
 
 export default function CoursePlayerClient({ course }: { course: Course }) {
-  const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://localhost:3000'
   const [activeTab, setActiveTab] = useState<'material' | 'quiz'>('material')
   const [hasMounted, setHasMounted] = useState(false)
 

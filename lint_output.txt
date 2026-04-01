@@ -1,0 +1,74 @@
+
+> cha-student-portal@1.0.0 lint
+> cross-env NODE_OPTIONS=--no-deprecation next lint
+
+
+./src/app/(frontend)/admin/import/actions.ts
+45:36  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+47:22  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+63:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+70:50  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+71:16  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+85:53  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+92:49  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+99:52  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+100:24  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+103:44  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+117:15  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+125:60  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+126:21  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+134:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+155:52  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+209:72  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/(frontend)/admin/import/page.tsx
+12:10  Warning: 'importCount' is assigned a value but never used. Allowed unused elements of array destructuring must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(frontend)/courses/[slug]/CoursePlayerClient.tsx
+10:9  Warning: 'PAYLOAD_URL' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/app/(frontend)/layout.tsx
+19:12  Warning: 'error' is defined but never used. Allowed unused caught errors must match /^(_|ignore)/u.  @typescript-eslint/no-unused-vars
+
+./src/app/my-route/route.ts
+4:27  Warning: 'request' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+5:9  Warning: 'payload' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/collections/Courses.ts
+383:40  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+391:38  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+394:23  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/course/SlidePlayer.tsx
+33:3  Error: React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render.  react-hooks/rules-of-hooks
+
+./src/components/RichTextRenderer.tsx
+16:18  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+71:52  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/migrations/20260304_023444_initial_schema.ts
+3:32  Warning: 'payload' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+3:41  Warning: 'req' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+305:34  Warning: 'payload' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+305:43  Warning: 'req' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/migrations/20260304_065827_add_img_name_to_slides.ts
+3:32  Warning: 'payload' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+3:41  Warning: 'req' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+9:34  Warning: 'payload' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+9:43  Warning: 'req' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/migrations/20260331_171500_add_course_media.ts
+3:32  Warning: 'payload' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+3:41  Warning: 'req' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+10:34  Warning: 'payload' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+10:43  Warning: 'req' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+
+./src/types/course.ts
+30:10  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+46:13  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+69:23  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+87:14  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+88:16  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

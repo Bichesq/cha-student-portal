@@ -23,19 +23,21 @@ export const SlidePlayer: React.FC<SlidePlayerProps> = ({ slides, audioEnabled }
     setHasMounted(true)
   }, [])
 
+  // Cleanup audio/speech on slide change
+  useEffect(() => {
+    if (hasMounted) {
+      stopAudio()
+    }
+    return () => {
+      stopAudio()
+    }
+  }, [currentSlideIndex, hasMounted])
+
   if (!hasMounted) {
     return null // Return null or a skeleton, but don't render until mounted to avoid hydration mismatch
   }
   
   const currentSlide = slides[currentSlideIndex]
-
-  // Cleanup audio/speech on slide change
-  useEffect(() => {
-    stopAudio()
-    return () => {
-      stopAudio()
-    }
-  }, [currentSlideIndex])
 
   const nextSlide = () => {
     if (currentSlideIndex < slides.length - 1) {
