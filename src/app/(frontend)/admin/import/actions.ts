@@ -42,34 +42,84 @@ function stringToLexical(text: string) {
  * - Maps simple arrays to Payload's array of objects format.
  * - Filters out relationship fields if they are strings (must be IDs).
  */
-function transformCourseData(data: any) {
-  // Create a clean object with only supported fields
-  const transformed: any = {
+interface SlideInput {
+  slideType?: string
+  slideTitle?: string
+  order?: number
+  imgName?: string
+  image?: string | number
+  content?: string
+  objective?: string
+  authorName?: string
+  authorRole?: string
+  bulletPoints?: (string | { point: string })[]
+  topicsList?: (string | { topic: string })[]
+  subheadings?: { 
+    label: string
+    body?: string
+    items?: (string | { point: string })[]
+  }[]
+}
+
+interface QuestionInput {
+  order?: number
+  questionType: 'mcq' | 'completion'
+  question?: string
+  answers?: { ansId: string; ans: string; isCorrect?: boolean }[]
+  completionMessage?: string
+  completionSubtext?: string
+}
+
+interface KnowledgeCheckInput {
+  allowPerQuestionSubmit?: boolean
+  playOnNextDefault?: boolean
+  showProgress?: boolean
+  passingScore?: number
+  questions?: QuestionInput[]
+}
+
+interface CourseInput {
+  courseId: string
+  title: string
+  authorName?: string
+  authorRole?: string
+  contentModel?: string
+  audioEnabled?: boolean
+  status?: 'published' | 'draft'
+  objective?: string
+  description?: string
+  topics?: (string | { topic: string })[]
+  slides?: SlideInput[]
+  knowledgeCheck?: KnowledgeCheckInput
+}
+
+/**
+ * Recursively prepares course data for Payload insertion.
+ */
+function transformCourseData(data: CourseInput) {
+  const transformed: Record<string, unknown> = {
     courseId: data.courseId,
     title: data.title,
     authorName: data.authorName,
     authorRole: data.authorRole || 'Author and Designer',
     contentModel: data.contentModel || 'slides',
     audioEnabled: typeof data.audioEnabled === 'boolean' ? data.audioEnabled : true,
-    status: data.status || 'published', // Default to published for imports
+    status: data.status || 'published',
   }
 
-  // 1. Root level RichText fields
   if (typeof data.objective === 'string') transformed.objective = stringToLexical(data.objective)
   if (typeof data.description === 'string') transformed.description = stringToLexical(data.description)
 
-  // Root level topics transformation
   if (Array.isArray(data.topics)) {
-    transformed.topics = data.topics.map((t: any) => 
+    transformed.topics = data.topics.map((t) => 
       typeof t === 'string' ? { topic: t } : t
     )
   }
 
-  // 2. Transform Slides
   if (Array.isArray(data.slides)) {
-    transformed.slides = data.slides.map((slide: any) => {
-      const s: any = {
-        slideType: slide.slideType,
+    transformed.slides = data.slides.map((slide) => {
+      const s: Record<string, unknown> = {
+        slideType: slide.slideType || 'content',
         slideTitle: slide.slideTitle,
         order: slide.order,
         imgName: slide.imgName,
@@ -81,30 +131,24 @@ function transformCourseData(data: any) {
       if (typeof slide.authorName === 'string') s.authorName = slide.authorName
       if (typeof slide.authorRole === 'string') s.authorRole = slide.authorRole
       
-      // Default to 'content' type for manual slides if no type is provided
-      if (!s.slideType) s.slideType = 'content'
-
-      // Transform bulletPoints string array to { point: string } array
       if (Array.isArray(slide.bulletPoints)) {
-        s.bulletPoints = slide.bulletPoints.map((p: any) => 
+        s.bulletPoints = slide.bulletPoints.map((p) => 
           typeof p === 'string' ? { point: p } : p
         )
       }
 
-      // Transform topicsList string array to { topic: string } array
       if (Array.isArray(slide.topicsList)) {
-        s.topicsList = slide.topicsList.map((t: any) => 
+        s.topicsList = slide.topicsList.map((t) => 
           typeof t === 'string' ? { topic: t } : t
         )
       }
 
-      // Transform subheadings
       if (Array.isArray(slide.subheadings)) {
-        s.subheadings = slide.subheadings.map((sh: any) => {
-          const newSh: any = { label: sh.label }
+        s.subheadings = slide.subheadings.map((sh) => {
+          const newSh: Record<string, unknown> = { label: sh.label }
           if (typeof sh.body === 'string') newSh.body = stringToLexical(sh.body)
           if (Array.isArray(sh.items)) {
-            newSh.items = sh.items.map((i: any) => 
+            newSh.items = sh.items.map((i) => 
               typeof i === 'string' ? { point: i } : i
             )
           }
@@ -116,9 +160,8 @@ function transformCourseData(data: any) {
     })
   }
 
-  // 3. Transform Knowledge Check
   if (data.knowledgeCheck) {
-    const kc: any = {
+    const kc: Record<string, unknown> = {
       allowPerQuestionSubmit: !!data.knowledgeCheck.allowPerQuestionSubmit,
       playOnNextDefault: !!data.knowledgeCheck.playOnNextDefault,
       showProgress: !!data.knowledgeCheck.showProgress,
@@ -126,8 +169,8 @@ function transformCourseData(data: any) {
     }
 
     if (Array.isArray(data.knowledgeCheck.questions)) {
-      kc.questions = data.knowledgeCheck.questions.map((q: any) => {
-        const newQ: any = {
+      kc.questions = data.knowledgeCheck.questions.map((q) => {
+        const newQ: Record<string, unknown> = {
           order: q.order,
           questionType: q.questionType,
         }
@@ -135,7 +178,7 @@ function transformCourseData(data: any) {
         if (q.questionType === 'mcq') {
           newQ.question = q.question
           if (Array.isArray(q.answers)) {
-            newQ.answers = q.answers.map((a: any) => ({
+            newQ.answers = q.answers.map((a) => ({
               ansId: a.ansId,
               ans: a.ans,
               isCorrect: !!a.isCorrect
@@ -156,7 +199,7 @@ function transformCourseData(data: any) {
   return transformed
 }
 
-export async function importCoursesAction(courses: any[]) {
+export async function importCoursesAction(courses: CourseInput[]) {
   console.log(`Starting creation process for ${courses?.length || 0} items...`)
   try {
     const payload = await getPayload({ config })
@@ -167,7 +210,7 @@ export async function importCoursesAction(courses: any[]) {
        return { success: false, message: "Invalid input: expected an array." }
     }
 
-    const results = []
+    const results: { courseId: string; success: boolean; error?: string }[] = []
     for (const rawData of courses) {
       console.log(`Processing course: ${rawData.courseId || 'unknown'} - ${rawData.title || 'no title'}`)
       try {
@@ -179,7 +222,7 @@ export async function importCoursesAction(courses: any[]) {
         }
 
         const courseData = transformCourseData(rawData)
-        console.log(`Transformed data for ${courseData.courseId}:`, JSON.stringify(courseData).substring(0, 200) + "...")
+        console.log(`Transformed data for ${courseData.courseId as string}:`, JSON.stringify(courseData).substring(0, 200) + "...")
 
         const existing = await payload.find({
           collection: 'courses',
@@ -191,26 +234,27 @@ export async function importCoursesAction(courses: any[]) {
           await payload.update({
             collection: 'courses',
             id: existing.docs[0].id,
-            data: courseData,
+            data: courseData as any,
           })
         } else {
           console.log(`Creating new course ${courseData.courseId}`)
           await payload.create({
             collection: 'courses',
-            data: courseData,
+            data: courseData as any,
           })
         }
         
         count++
         results.push({ courseId: courseData.courseId, success: true })
         console.log(`Successfully processed ${courseData.courseId}. Total count: ${count}`)
-      } catch (err) {
+      } catch (err: unknown) {
         console.error(`Error creating course ${rawData.courseId}:`, err)
         const errorMessage = err instanceof Error ? err.message : 'Unknown error'
         results.push({ courseId: rawData.courseId, success: false, error: errorMessage })
-        // Check for validation errors manually if possible
-        if (err && typeof err === 'object' && 'data' in err) {
-           console.error("Validation details:", JSON.stringify((err as any).data))
+        
+        // Safely check for validation errors
+        if (err && typeof err === 'object' && 'data' in err && err.data && typeof err.data === 'object') {
+           console.error("Validation details:", JSON.stringify(err.data))
         }
       }
     }
@@ -249,7 +293,7 @@ export async function createManualCourseAction(formData: FormData) {
       return { success: false, message: 'Missing course data.' }
     }
     
-    const courseData = JSON.parse(courseDataRaw)
+    const courseData = JSON.parse(courseDataRaw) as CourseInput
     
     // 1. Handle file uploads for slides
     if (courseData.slides && Array.isArray(courseData.slides)) {

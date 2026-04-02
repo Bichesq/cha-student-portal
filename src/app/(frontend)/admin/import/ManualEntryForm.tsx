@@ -343,7 +343,7 @@ export default function ManualEntryForm({
 
           {courseData.slides.length === 0 && (
             <div className="text-center py-12 border-2 border-dashed border-slate-100 rounded-3xl">
-              <p className="text-slate-400 font-medium">No slides added yet. Click "Add Slide" to begin.</p>
+              <p className="text-slate-400 font-medium">No slides added yet. Click &quot;Add Slide&quot; to begin.</p>
             </div>
           )}
         </div>
