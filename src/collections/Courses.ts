@@ -380,7 +380,7 @@ export const Courses: CollectionConfig = {
             beforeChange: [
               ({ value }) => {
                 if (value && Array.isArray(value)) {
-                  return value.map((q: any, index) => ({ ...q, order: index + 1 }))
+                  return value.map((q: { questionType: string; [key: string]: unknown }, index) => ({ ...q, order: index + 1 }))
                 }
                 return value
               },
@@ -388,10 +388,14 @@ export const Courses: CollectionConfig = {
           },
           validate: (value) => {
             if (!value) return true
-            for (const q of value as any[]) {
+            const questions = value as { 
+              questionType: string; 
+              answers?: { isCorrect: boolean }[] 
+            }[]
+            for (const q of questions) {
               if (q.questionType === 'mcq' && q.answers) {
                 const correctCount = q.answers.filter(
-                  (a: any) => a.isCorrect,
+                  (a) => a.isCorrect,
                 ).length
                 if (correctCount > 1) {
                   return 'Only one answer can be correct.'
