@@ -73,6 +73,7 @@ function transformCourseData(data: any) {
         slideTitle: slide.slideTitle,
         order: slide.order,
         imgName: slide.imgName,
+        image: slide.image,
       }
 
       if (typeof slide.content === 'string') s.content = stringToLexical(slide.content)
@@ -80,6 +81,9 @@ function transformCourseData(data: any) {
       if (typeof slide.authorName === 'string') s.authorName = slide.authorName
       if (typeof slide.authorRole === 'string') s.authorRole = slide.authorRole
       
+      // Default to 'content' type for manual slides if no type is provided
+      if (!s.slideType) s.slideType = 'content'
+
       // Transform bulletPoints string array to { point: string } array
       if (Array.isArray(slide.bulletPoints)) {
         s.bulletPoints = slide.bulletPoints.map((p: any) => 
@@ -232,6 +236,66 @@ export async function importCoursesAction(courses: any[]) {
     return {
       success: false,
       message: err instanceof Error ? err.message : 'An unexpected error occurred during course creation.',
+    }
+  }
+}
+
+export async function createManualCourseAction(formData: FormData) {
+  console.log('Starting manual creation process...')
+  try {
+    const payload = await getPayload({ config })
+    const courseDataRaw = formData.get('courseData') as string
+    if (!courseDataRaw) {
+      return { success: false, message: 'Missing course data.' }
+    }
+    
+    const courseData = JSON.parse(courseDataRaw)
+    
+    // 1. Handle file uploads for slides
+    if (courseData.slides && Array.isArray(courseData.slides)) {
+      for (let i = 0; i < courseData.slides.length; i++) {
+        const slide = courseData.slides[i]
+        const fileKey = `slideImage_${i}`
+        const file = formData.get(fileKey) as File | null
+        
+        if (file && file.size > 0) {
+          console.log(`Uploading image for slide ${i}: ${file.name}`)
+          
+          try {
+            const arrayBuffer = await file.arrayBuffer()
+            const buffer = Buffer.from(arrayBuffer)
+            
+            const mediaDoc = await payload.create({
+              collection: 'media',
+              data: {
+                alt: slide.slideTitle || `${courseData.title}-Slide-${i + 1}`,
+              },
+              file: {
+                data: buffer,
+                name: file.name,
+                mimetype: file.type,
+                size: file.size,
+              },
+            })
+            
+            // Link media ID to slide
+            slide.image = mediaDoc.id
+            console.log(`Successfully uploaded and linked image: ${mediaDoc.id}`)
+          } catch (uploadErr) {
+            console.error(`Failed to upload image for slide ${i}:`, uploadErr)
+            // Continue without image or fail? Let's continue for now.
+          }
+        }
+      }
+    }
+
+    // 2. Reuse the import logic
+    return await importCoursesAction([courseData])
+  } catch (err) {
+    console.error('Manual creation failed fatally:', err)
+    return {
+      success: false,
+      message: err instanceof Error ? err.message : 'An unexpected error occurred during manual creation.',
     }
   }
 }
